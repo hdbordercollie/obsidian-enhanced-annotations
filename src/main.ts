@@ -64,7 +64,7 @@ export default class LabeledAnnotations extends Plugin {
 
         this.idling = new Idling(this);
         this.app.workspace.onLayoutReady(async () => {
-            await this.activateView();
+            await this.attachLeaf();
             loadOutlineStateFromSettings(this);
             this.registerSubscription(...subscribeSettingsToOutlineState(this));
             this.addSettingTab(new SettingsTab(this.app, this));
@@ -106,9 +106,7 @@ export default class LabeledAnnotations extends Plugin {
         await this.saveData(this.settings.getValue());
     }
 
-    async activateView() {
-        this.app.workspace.detachLeavesOfType(SIDEBAR_OUTLINE_VIEW_TYPE);
-
+    async attachLeaf() {
         const leaves = this.app.workspace.getLeavesOfType(
             SIDEBAR_OUTLINE_VIEW_TYPE,
         );
@@ -117,11 +115,17 @@ export default class LabeledAnnotations extends Plugin {
                 type: SIDEBAR_OUTLINE_VIEW_TYPE,
                 active: true,
             });
-            this.app.workspace.revealLeaf(
-                this.app.workspace.getLeavesOfType(
-                    SIDEBAR_OUTLINE_VIEW_TYPE,
-                )[0],
-            );
+        }
+    }
+
+    async revealLeaf() {
+        const leaf = this.app.workspace.getLeavesOfType(
+            SIDEBAR_OUTLINE_VIEW_TYPE,
+        )[0];
+        if (leaf) this.app.workspace.revealLeaf(leaf);
+        else {
+            await this.attachLeaf();
+            await this.revealLeaf();
         }
     }
 

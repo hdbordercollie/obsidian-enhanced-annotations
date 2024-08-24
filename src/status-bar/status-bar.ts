@@ -1,4 +1,3 @@
-import { SIDEBAR_OUTLINE_VIEW_TYPE } from '../sidebar-outline/sidebar-outline-view';
 import LabeledAnnotations from '../main';
 import { fileAnnotations } from '../sidebar-outline/components/components/annotations-list/annotations-list.store';
 import { Annotation } from '../editor-plugin/helpers/decorate-annotations/helpers/parse-annotations/parse-annotations';
@@ -104,11 +103,7 @@ export class StatusBar {
     };
 
     private onClick = async () => {
-        const leaf = this.plugin.app.workspace.getLeavesOfType(
-            SIDEBAR_OUTLINE_VIEW_TYPE,
-        )[0];
-        if (leaf) this.plugin.app.workspace.revealLeaf(leaf);
-        else await this.plugin.activateView();
+        await this.plugin.revealLeaf();
     };
 
     private onHover = async () => {
