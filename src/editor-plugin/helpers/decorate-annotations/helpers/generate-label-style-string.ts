@@ -19,7 +19,7 @@ export const generateLabelStyleString = (
         if (isHighlight) {
             const rgb = hexToRgb(style.color, (style.opacity || 80) / 100);
             styleStringParts.push(`background-color: ${rgb}`);
-            styleStringParts.push(`color: white`);
+            styleStringParts.push(`color: var(--text-normal)`);
         } else styleStringParts.push(`color: ${style.color}`);
     }
 
