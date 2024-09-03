@@ -40,9 +40,14 @@ export class AnnotationSuggest extends EditorSuggest<AnnotationCompletion> {
 
     getSuggestions(context: EditorSuggestContext): AnnotationCompletion[] {
         const groups = this.plugin.settings.getValue().decoration.styles.labels;
-        const labels = Object.values(groups)
-            .map((g) => g.label)
-            .filter((v) => v);
+        const labels = Array.from(
+            new Set(
+                Object.values(groups)
+                    .map((g) => g.label)
+                    .filter((v) => v),
+            ),
+        );
+
         const suggestions = labels
             .map((val) => ({ label: val }))
             .filter((item) =>

@@ -18,6 +18,8 @@ export type TagSettings = {
     enableStyle: boolean;
 };
 
+export type StyleScope = 'comments' | 'highlights';
+
 export type LabelStyle = {
     color?: string;
     italic?: boolean;
@@ -27,6 +29,7 @@ export type LabelStyle = {
     fontWeight?: FontWeight;
     opacity?: Opacity;
     fontFamily?: FontFamily;
+    scope?: StyleScope;
 };
 export type LabelSettings = {
     label: string;

@@ -4,6 +4,12 @@ import { generateLabelStyleString } from './helpers/generate-label-style-string'
 import LabeledAnnotations from '../../../main';
 import { triggerEditorUpdate } from '../../../sidebar-outline/helpers/outline-updater/helpers/trigger-editor-update';
 
+type StyleDecorations = {
+    comment: Decoration | null;
+    tag: Decoration | null;
+    highlight: Decoration | null;
+};
+
 export class DecorationSettings {
     constructor(private plugin: LabeledAnnotations) {}
 
@@ -18,14 +24,7 @@ export class DecorationSettings {
         this.decorate();
     }
 
-    private _decorations: Record<
-        string,
-        {
-            comment: Decoration;
-            tag: Decoration;
-            highlight: Decoration;
-        }
-    >;
+    private _decorations: Record<string, StyleDecorations>;
 
     get decorations() {
         return this._decorations;
@@ -41,24 +40,32 @@ export class DecorationSettings {
         this._decorations = Object.values(styles.labels).reduce(
             (acc, val) => {
                 if (val.enableStyle) {
-                    acc[val.label] = {
-                        comment: Decoration.mark({
-                            attributes: {
-                                style: generateLabelStyleString(
-                                    val.style,
-                                    false,
-                                ),
-                            },
-                        }),
-                        highlight: Decoration.mark({
+                    const decorations: StyleDecorations = acc[val.label] || {
+                        comment: null,
+                        highlight: null,
+                        tag: null,
+                    };
+
+                    if (!val.style.scope || val.style.scope === 'highlights') {
+                        decorations.highlight = Decoration.mark({
                             attributes: {
                                 style: generateLabelStyleString(
                                     val.style,
                                     true,
                                 ),
                             },
-                        }),
-                        tag: Decoration.mark({
+                        });
+                    }
+                    if (!val.style.scope || val.style.scope === 'comments') {
+                        decorations.comment = Decoration.mark({
+                            attributes: {
+                                style: generateLabelStyleString(
+                                    val.style,
+                                    false,
+                                ),
+                            },
+                        });
+                        decorations.tag = Decoration.mark({
                             attributes: {
                                 style: generateLabelStyleString(
                                     {
@@ -68,19 +75,14 @@ export class DecorationSettings {
                                     false,
                                 ),
                             },
-                        }),
-                    };
+                        });
+                    }
+
+                    acc[val.label] = decorations;
                 }
                 return acc;
             },
-            {} as Record<
-                string,
-                {
-                    comment: Decoration;
-                    tag: Decoration;
-                    highlight: Decoration;
-                }
-            >,
+            {} as Record<string, StyleDecorations>,
         );
         this._decorateTags = styles.tag.enableStyle;
 

@@ -8,6 +8,7 @@ import {
     NotesNamingMode,
     Opacity,
     Settings,
+    StyleScope,
 } from './settings-type';
 import { getDefaultColor } from './helpers/get-default-color';
 import { isValidLabel } from '../editor-suggest/helpers/is-valid-label';
@@ -103,6 +104,13 @@ export type SettingsActions =
               case?: Case;
           };
       }
+    | {
+          type: 'SET_LABEL_SCOPE';
+          payload: {
+              id: string;
+              scope?: StyleScope;
+          };
+      }
     | { type: 'SET_TTS_VOLUME'; payload: { volume: number } }
     | { type: 'SET_TTS_RATE'; payload: { rate: number } }
     | { type: 'SET_TTS_PITCH'; payload: { pitch: number } }
@@ -133,7 +141,7 @@ const updateState = (store: Settings, action: SettingsActions) => {
     const labels = store.decoration.styles.labels;
     const tag = store.decoration.styles.tag;
     if (action.type === 'SET_PATTERN') {
-        if (isValidLabel(action.payload.pattern))
+        if (!action.payload.pattern || isValidLabel(action.payload.pattern))
             labels[action.payload.id].label = action.payload.pattern;
     } else if (action.type === 'SET_COLOR') {
         labels[action.payload.id].style.color = action.payload.color;
@@ -166,6 +174,8 @@ const updateState = (store: Settings, action: SettingsActions) => {
         labels[action.payload.id].style.underline = action.payload.underline;
     else if (action.type === 'SET_LABEL_FONT_WEIGHT')
         labels[action.payload.id].style.fontWeight = action.payload.weight;
+    else if (action.type === 'SET_LABEL_SCOPE')
+        labels[action.payload.id].style.scope = action.payload.scope;
     else if (action.type === 'SET_LABEL_FONT_OPACITY')
         labels[action.payload.id].style.opacity = action.payload.opacity;
     else if (action.type === 'SET_LABEL_FONT_FAMILY')

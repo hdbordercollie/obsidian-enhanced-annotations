@@ -157,25 +157,24 @@
             type="color"
             value={label.style.color || ''}
         />
-        <ToggleButton
-            enabled={underline}
-            label="Underline"
-            onClick={onToggleUnderline}
-        >
-            <Underline size={18} />
-        </ToggleButton>
-        <ToggleButton enabled={italic} label="Italic" onClick={onToggleItalic}>
-            <Italic size={18} />
-        </ToggleButton>
 
         <MultiOptionsToggleButton
             props={{
-                name: 'Font weight',
-                options: fontWeights,
-                value: label.style.fontWeight,
-                onChange: onFontWeightChange,
+                onChange: onFontOpacityChange,
+                options: fontOpacities,
+                value: label.style.opacity,
+                name: 'Opacity',
             }}
         />
+        <MultiOptionsToggleButton
+            props={{
+                onChange: onFontSizeChange,
+                options: fontSizes,
+                value: label.style.fontSize,
+                name: 'Font size',
+            }}
+        />
+
         <SquareButton
             label={showAdditionalSettings ? l.COLLAPSE : l.EXPAND}
             onClick={onToggleAdditionalSettings}
@@ -189,6 +188,38 @@
     </div>
 
     {#if showAdditionalSettings}
+        <div class="settings-row">
+            <ToggleButton
+                enabled={italic}
+                label="Italic"
+                onClick={onToggleItalic}
+            >
+                <Italic size={18} />
+            </ToggleButton>
+
+            <MultiOptionsToggleButton
+                props={{
+                    name: 'Font weight',
+                    options: fontWeights,
+                    value: label.style.fontWeight,
+                    onChange: onFontWeightChange,
+                }}
+            />
+            <ToggleButton
+                enabled={underline}
+                label="Underline"
+                onClick={onToggleUnderline}
+            >
+                <Underline size={18} />
+            </ToggleButton>
+
+            <SquareButton
+                label={l.SETTINGS_LABELS_STYLES_DELETE_STYLE}
+                onClick={onDelete}
+            >
+                <Trash2 size={18} color="red" />
+            </SquareButton>
+        </div>
         <div class="settings-row">
             <MultiOptionsToggleButton
                 props={{
@@ -206,29 +237,6 @@
                     onChange: onLabelCaseChange,
                 }}
             />
-
-            <MultiOptionsToggleButton
-                props={{
-                    onChange: onFontSizeChange,
-                    options: fontSizes,
-                    value: label.style.fontSize,
-                    name: 'Font size',
-                }}
-            />
-            <MultiOptionsToggleButton
-                props={{
-                    onChange: onFontOpacityChange,
-                    options: fontOpacities,
-                    value: label.style.opacity,
-                    name: 'Opacity',
-                }}
-            />
-            <SquareButton
-                label={l.SETTINGS_LABELS_STYLES_DELETE_STYLE}
-                onClick={onDelete}
-            >
-                <Trash2 size={18} color="red" />
-            </SquareButton>
         </div>
     {/if}
 </div>

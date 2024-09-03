@@ -26,32 +26,44 @@ export const decorateAnnotations = (
                 const decoration =
                     plugin.decorationSettings.decorations[annotation.label];
                 if (decoration) {
-                    if (
-                        plugin.decorationSettings.decorateTags &&
-                        !annotation.isHighlight
-                    ) {
+                    // decoration.comment and decoration.highlight could be null based on style scope
+                    if (annotation.isHighlight) {
+                        if (decoration.highlight) {
+                            builder.add(
+                                annotation.position.from,
+                                annotation.position.to,
+                                decoration.highlight,
+                            );
+                        } else {
+                            builder.add(
+                                annotation.position.from,
+                                annotation.position.to,
+                                defaultHighlightDecoration,
+                            );
+                        }
+                    } else if (plugin.decorationSettings.decorateTags) {
+                        if (decoration.tag && decoration.comment) {
+                            builder.add(
+                                annotation.position.from,
+                                annotation.position.afterFrom,
+                                decoration.tag,
+                            );
+                            builder.add(
+                                annotation.position.afterFrom,
+                                annotation.position.beforeTo,
+                                decoration.comment,
+                            );
+                            builder.add(
+                                annotation.position.beforeTo,
+                                annotation.position.to,
+                                decoration.tag,
+                            );
+                        }
+                    } else if (decoration.comment) {
                         builder.add(
                             annotation.position.from,
-                            annotation.position.afterFrom,
-                            decoration.tag,
-                        );
-                        builder.add(
-                            annotation.position.afterFrom,
-                            annotation.position.beforeTo,
+                            annotation.position.to,
                             decoration.comment,
-                        );
-                        builder.add(
-                            annotation.position.beforeTo,
-                            annotation.position.to,
-                            decoration.tag,
-                        );
-                    } else {
-                        builder.add(
-                            annotation.position.from,
-                            annotation.position.to,
-                            annotation.isHighlight
-                                ? decoration.highlight
-                                : decoration.comment,
                         );
                     }
                 } else if (annotation.isHighlight) {

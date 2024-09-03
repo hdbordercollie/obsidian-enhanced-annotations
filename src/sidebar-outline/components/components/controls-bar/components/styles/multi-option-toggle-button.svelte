@@ -1,12 +1,14 @@
 <script lang="ts">
-	/* eslint-disable svelte/no-at-html-tags */
-	import { Notice } from 'obsidian';
-	import { CaseLowerIcon, CaseSensitiveIcon, CaseUpperIcon } from 'lucide-svelte';
+    /* eslint-disable svelte/no-at-html-tags */
+    import { Notice } from 'obsidian';
+    import { CaseLowerIcon, CaseSensitiveIcon, CaseUpperIcon, HighlighterIcon, MessageSquareIcon } from 'lucide-svelte';
 
-	const icons = {
+    const icons = {
 		'case-lower': CaseLowerIcon,
 		'case-upper': CaseUpperIcon,
-		'case-sensitive': CaseSensitiveIcon
+		'case-sensitive': CaseSensitiveIcon,
+		'comment':MessageSquareIcon,
+		'highlight':HighlighterIcon
 	};
 
 	type Option<T extends string | number> = {
