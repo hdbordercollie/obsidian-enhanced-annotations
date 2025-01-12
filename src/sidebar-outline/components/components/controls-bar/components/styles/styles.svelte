@@ -6,18 +6,46 @@
     import AdditionalStyles from './additional-styles.svelte';
     import { onDestroy } from 'svelte';
     import MultiOptionsToggleButton from './multi-option-toggle-button.svelte';
+    import { isValidLabel } from '../../../../../../editor-suggest/helpers/is-valid-label';
 
     export let label: LabelSettings;
     export let plugin: LabeledAnnotations;
 
+    let notice: Notice | null = null;
+    let valid = true;
+    let previousMessage = '';
+    let previousMessageTs = 0;
+    let isEmpty = true;
+
+    const onLabelInput = (e: any) => {
+        const value = e.target.value;
+        isEmpty = value.length === 0;
+        valid = isValidLabel(value);
+        if (!valid) {
+            let message = '';
+            if (value === '/') message = "A label should not be equal to '/'";
+            else if (value.contains(':'))
+                message = "A label should not contain ':'";
+            else if (value.contains(' '))
+                message = 'A label should not contain spaces';
+            if (
+                message &&
+                (message !== previousMessage ||
+                    Date.now() - previousMessageTs > 10000)
+            ) {
+                if (notice) notice.hide();
+                previousMessage = message;
+                previousMessageTs = Date.now();
+                notice = new Notice(message, 10000);
+            }
+        } else {
+            if (notice) notice.hide();
+        }
+    };
     const onLabelChange = (e: any) => {
         const value = e.target.value;
-        const input = e.target;
-        input.checkValidity();
-        if (input.validity.patternMismatch) {
-            input.reportValidity();
-            new Notice(l.SETTINGS_LABELS_STYLES_LABEL_INVALID);
-        } else {
+        valid = isValidLabel(value);
+        if (valid) {
             plugin.settings.dispatch({
                 payload: {
                     pattern: value,
@@ -77,8 +105,10 @@
         }}
     />
     <input
+        class={!valid && !isEmpty ? 'invalid-label' : ''}
         on:change={onLabelChange}
-        pattern={'^\\w+$'}
+        on:input={onLabelInput}
+        pattern={'[^:\\s]'}
         placeholder={l.SETTINGS_LABELS_STYLES_NAME_PLACE_HOLDER}
         style="width: 75px;"
         type="text"
@@ -98,5 +128,8 @@
         gap: 5px;
         flex-wrap: wrap;
         justify-content: center;
+    }
+    .invalid-label {
+        outline: var(--color-red) 2px solid;
     }
 </style>

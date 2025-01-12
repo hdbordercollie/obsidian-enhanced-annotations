@@ -68,7 +68,6 @@ export const l = {
         'Assigns keys `F5` `F6` `F7` to comment insertion commands',
     EXPAND: 'Expand',
     COLLAPSE: 'Collapse',
-    SETTINGS_LABELS_STYLES_LABEL_INVALID: 'Invalid label',
     COMMANDS_JUMP_TO_NEW_LINE: 'Jump to a new line',
     COMMANDS_INSERT_COMMENT: 'Insert a comment',
     COMMANDS_INSERT_COMMENT_AFTER_EMPTY_LINE:
