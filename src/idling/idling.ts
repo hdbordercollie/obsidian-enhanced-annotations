@@ -16,7 +16,7 @@ export class Idling {
 
     constructor(private plugin: LabeledAnnotations) {
         this.plugin.settings.dispatch({ type: 'LOG_PLUGIN_STARTED' });
-        if (!pluginIsIdle(plugin.settings.getValue())) this.plugin.loadPlugin();
+        if (!pluginIsIdle(plugin)) this.plugin.loadPlugin();
         this.subscribe();
     }
 
@@ -27,7 +27,7 @@ export class Idling {
     private logActivity() {
         if (!this.enabled) {
             this.enabled = true;
-            const wasIdle = pluginIsIdle(this.plugin.settings.getValue());
+            const wasIdle = pluginIsIdle(this.plugin);
             this.plugin.settings.dispatch({ type: 'LOG_PLUGIN_USED' });
             if (wasIdle) {
                 pluginIdle.set(false);
@@ -41,6 +41,7 @@ export class Idling {
     }
 
     private subscribe() {
+        if (pluginIsIdle(this.plugin)) return;
         this.subscriptions.add(
             controls.subscribe((v, action) => {
                 if (action) {

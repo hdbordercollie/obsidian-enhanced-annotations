@@ -7,6 +7,7 @@ import W from 'src/editor-plugin/helpers/decorate-annotations/helpers/parse-anno
 import { Store } from '../../../helpers/store';
 import { WorkerPromise } from '../../../helpers/worker-promise';
 import { Annotation } from '../../../editor-plugin/helpers/decorate-annotations/helpers/parse-annotations/parse-annotations';
+import { pluginIsIdle } from '../../../settings/settings-selectors';
 
 type OutlineState = {
     view: MarkdownView | null;
@@ -59,6 +60,12 @@ export class OutlineUpdater extends Store<OutlineState, never> {
                     leaf?.getRoot() as WorkspaceItem & { side?: string }
                 )?.side;
                 if (!side) this.updateOutline(leaf?.view, true);
+                if (leaf?.view instanceof MarkdownView) {
+                    leaf.view.contentEl.toggleClass(
+                        'enhanced-annotations__enable-decoration',
+                        !pluginIsIdle(this.plugin),
+                    );
+                }
             }),
         );
 

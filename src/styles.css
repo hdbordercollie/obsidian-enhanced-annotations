@@ -1,9 +1,11 @@
-.cm-highlight {
-    background-color: transparent !important;
-}
+.enhanced-annotations__enable-decoration {
+    .cm-highlight {
+        background-color: transparent !important;
+    }
 
-.cm-highlight-default {
-    background-color: var(--text-highlight-bg);
+    .cm-highlight-default {
+        background-color: var(--text-highlight-bg);
+    }
 }
 
 .enhanced-annotations__sidebar-outline {

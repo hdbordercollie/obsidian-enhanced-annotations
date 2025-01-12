@@ -62,13 +62,16 @@ export default class LabeledAnnotations extends Plugin {
             (leaf) => new SidebarOutlineView(leaf, this),
         );
 
-        this.idling = new Idling(this);
         this.app.workspace.onLayoutReady(async () => {
             await this.attachLeaf();
             loadOutlineStateFromSettings(this);
             this.registerSubscription(...subscribeSettingsToOutlineState(this));
             this.addSettingTab(new SettingsTab(this.app, this));
             registerEditorMenuEvent(this);
+            this.outline = new OutlineUpdater(this);
+            this.statusBar = new StatusBar(this);
+            tts.setPlugin(this);
+            this.idling = new Idling(this);
         });
     }
 
@@ -82,11 +85,8 @@ export default class LabeledAnnotations extends Plugin {
     loadPlugin() {
         this.decorationSettings = new DecorationSettings(this);
         EditorPlugin.plugin = this;
-        this.outline = new OutlineUpdater(this);
-        tts.setPlugin(this);
         this.unsubscribeCallbacks.add(subscribeDecorationStateToSettings(this));
         this.registerEditorExtension([editorPlugin]);
-        this.statusBar = new StatusBar(this);
     }
 
     async loadSettings() {

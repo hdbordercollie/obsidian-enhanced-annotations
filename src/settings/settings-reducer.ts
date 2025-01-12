@@ -13,7 +13,7 @@ import {
 import { getDefaultColor } from './helpers/get-default-color';
 import { isValidLabel } from '../editor-suggest/helpers/is-valid-label';
 import { formattedDate } from '../helpers/date-utils';
-import { pluginIsIdle } from './settings-selectors';
+import { DAYS_UNUSED } from './settings-selectors';
 import { ClipboardTemplateSection } from '../clipboard/helpers/annotations-to-text';
 
 export type SettingsActions =
@@ -223,7 +223,8 @@ const updateState = (store: Settings, action: SettingsActions) => {
     else if (action.type === 'LOG_PLUGIN_USED') {
         store.idling.daysUnused = [];
     } else if (action.type === 'LOG_PLUGIN_STARTED') {
-        if (!pluginIsIdle(store)) {
+        const isIdle = store.idling.daysUnused.length > DAYS_UNUSED;
+        if (!isIdle) {
             const date = formattedDate();
             const daysUnused = store.idling.daysUnused.sort();
             if (!daysUnused.includes(date)) {

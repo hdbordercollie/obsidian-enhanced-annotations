@@ -1,4 +1,5 @@
-import { Settings } from './settings-type';
+import LabeledAnnotations from '../main';
 
-export const pluginIsIdle = (store: Settings) =>
-    store.idling.daysUnused.length > 3;
+export const DAYS_UNUSED = 3;
+export const pluginIsIdle = (plugin: LabeledAnnotations) =>
+    plugin.settings.getValue().idling.daysUnused.length > DAYS_UNUSED;

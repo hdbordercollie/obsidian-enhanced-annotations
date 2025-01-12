@@ -5,6 +5,7 @@ import {
 import { registerNewLabels } from './register-new-labels';
 import { Annotation } from '../../../../editor-plugin/helpers/decorate-annotations/helpers/parse-annotations/parse-annotations';
 import LabeledAnnotations from '../../../../main';
+import { pluginIsIdle } from '../../../../settings/settings-selectors';
 
 export const updateOutline = (
     annotations: Annotation[],
@@ -27,5 +28,5 @@ export const updateOutline = (
         );
 
     fileAnnotations.set({ labels });
-    registerNewLabels(annotations, plugin);
+    if (!pluginIsIdle(plugin)) registerNewLabels(annotations, plugin);
 };

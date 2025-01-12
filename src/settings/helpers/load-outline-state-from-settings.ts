@@ -23,5 +23,5 @@ export const loadOutlineStateFromSettings = (plugin: LabeledAnnotations) => {
     }));
     hiddenLabels.set(new Set(outlineSettings.hiddenLabels));
     hiddenTypes.set(new Set(outlineSettings.hiddenTypes));
-    pluginIdle.set(pluginIsIdle(settings));
+    pluginIdle.set(pluginIsIdle(plugin));
 };
