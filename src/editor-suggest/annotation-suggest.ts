@@ -5,7 +5,6 @@ import {
     EditorSuggest,
     EditorSuggestContext,
     EditorSuggestTriggerInfo,
-    MarkdownView,
 } from 'obsidian';
 import LabeledAnnotations from 'src/main';
 import { isValidLabel } from './helpers/is-valid-label';
@@ -13,6 +12,7 @@ import { isInsideAnnotation } from './helpers/is-inside-annotation';
 
 export type AnnotationCompletion = {
     label: string;
+    type?: 'empty-comment';
 };
 
 export class AnnotationSuggest extends EditorSuggest<AnnotationCompletion> {
@@ -62,19 +62,28 @@ export class AnnotationSuggest extends EditorSuggest<AnnotationCompletion> {
                     ? nB?.timestamp - nB?.timestamp
                     : countB - countA;
             });
+        let result: AnnotationCompletion[] = [];
         if (suggestions.length) {
-            return suggestions;
+            result = suggestions;
+        } else if (isValidLabel(context.query)) {
+            result = [{ label: context.query }];
         }
 
-        if (isValidLabel(context.query)) return [{ label: context.query }];
-        else return [];
+        result.push({ label: '', type: 'empty-comment' });
+
+        return result;
     }
 
     renderSuggestion(suggestion: AnnotationCompletion, el: HTMLElement): void {
         el.addClass('enhanced-annotations__suggestion');
         const textEL = el.createEl('span');
         const label = suggestion.label;
-        textEL.setText(label);
+        if (suggestion.type === 'empty-comment') {
+            textEL.addClass('enhanced-annotations__empty-comment');
+            textEL.setText('(no label)');
+        } else {
+            textEL.setText(label);
+        }
         el.appendChild(textEL);
         const count = this.usedSuggestions[label]?.count;
         if (count > 0) {
@@ -85,34 +94,27 @@ export class AnnotationSuggest extends EditorSuggest<AnnotationCompletion> {
         }
     }
 
-    selectSuggestion(
-        suggestion: AnnotationCompletion,
-        event: KeyboardEvent | MouseEvent,
-    ): void {
-        const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
-        if (!activeView) return;
+    selectSuggestion(suggestion: AnnotationCompletion): void {
+        const editor = this.app.workspace.activeEditor?.editor;
+        if (!editor) return;
         if (!this.context) return;
 
         const settings = this.plugin.settings.getValue();
         const label = suggestion.label.trim();
+        const content = label ? `${label}: ` : label;
         const text =
             settings.editorSuggest.commentFormat === 'html'
-                ? `<!--${label}: -->`
-                : `%%${label}: %%`;
-        activeView.editor.replaceRange(
-            text,
-            this.context.start,
-            this.context.end,
-        );
-        const cursor = activeView.editor.getCursor();
-        activeView.editor.setCursor({
+                ? `<!--${content}-->`
+                : `%%${content}%%`;
+        editor.replaceRange(text, this.context.start, this.context.end);
+        const cursor = editor.getCursor();
+        editor.setCursor({
             line: cursor.line,
             ch:
                 cursor.ch -
                 (settings.editorSuggest.commentFormat === 'html' ? 3 : 2),
         });
-
-        this.recordUsedSuggestion(label, true);
+        if (label) this.recordUsedSuggestion(label, true);
     }
 
     onTrigger(

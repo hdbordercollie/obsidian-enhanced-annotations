@@ -35,3 +35,7 @@
 .enhanced-annotations__settings-header{
     margin-top: 40px;
 }
+
+.enhanced-annotations__empty-comment{
+    color: #666
+}
