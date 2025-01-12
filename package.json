@@ -1,6 +1,6 @@
 {
 	"name": "enhanced-annotations",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"description": "",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

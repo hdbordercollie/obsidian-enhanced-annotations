@@ -84,21 +84,24 @@ export class StatusBar {
     ) => {
         const numberOfComments = comments.length;
         const numberOfHighlights = highlights.length;
+
+        const noComments = numberOfComments === 0;
+        const noHighlights = numberOfHighlights === 0;
+        this.elements.comments.toggleClass(displayNone, noComments);
+        this.elements.highlights.toggleClass(displayNone, noHighlights);
+        this.elements.container.toggleClass(
+            displayNone,
+            noHighlights && noComments,
+        );
         if (numberOfComments) {
-            this.elements.comments.toggleClass(displayNone, false);
             this.elements.comments.setText(
                 `${pluralize(numberOfComments, 'comment', 'comments')}`,
             );
-        } else {
-            this.elements.comments.toggleClass(displayNone, true);
         }
         if (numberOfHighlights) {
-            this.elements.highlights.toggleClass(displayNone, false);
             this.elements.highlights.setText(
                 `${pluralize(numberOfHighlights, 'highlight', 'highlights')}`,
             );
-        } else {
-            this.elements.highlights.toggleClass(displayNone, true);
         }
     };
 
