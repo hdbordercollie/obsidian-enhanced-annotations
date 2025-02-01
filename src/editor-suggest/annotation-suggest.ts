@@ -95,10 +95,8 @@ export class AnnotationSuggest extends EditorSuggest<AnnotationCompletion> {
     }
 
     selectSuggestion(suggestion: AnnotationCompletion): void {
-        const editor = this.app.workspace.activeEditor?.editor;
-        if (!editor) return;
         if (!this.context) return;
-
+        const editor = this.context.editor;
         const settings = this.plugin.settings.getValue();
         const label = suggestion.label.trim();
         const content = label ? `${label}: ` : label;
