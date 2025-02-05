@@ -143,4 +143,28 @@ Quam nulla porttitor massa id neque aliquam
         const annotations = parseAnnotations(input);
         expect(annotations.map((v) => v.text).join('')).toEqual(output);
     });
+
+    it('should skip blocks that have a space before backticks', () => {
+        const input = [
+            '1 2',
+            '3 4',
+            ' ```java',
+            'x==1',
+            '```',
+            '==5 6',
+            '7 8',
+            '9 10==',
+            '11 12',
+        ].join('\n');
+        const output = '5 6 7 8 9 10';
+        const annotations = parseAnnotations(input);
+        expect(annotations.map((v) => v.text).join('')).toEqual(output);
+    });
+
+    it('should skip inline code blocks', () => {
+        const input = '==highlighted text 1== `x == y` ==highlighted text 2==';
+        const annotations = parseAnnotations(input);
+        const output = 'highlighted text 1, highlighted text 2';
+        expect(annotations.map((v) => v.text).join(', ')).toEqual(output);
+    });
 });

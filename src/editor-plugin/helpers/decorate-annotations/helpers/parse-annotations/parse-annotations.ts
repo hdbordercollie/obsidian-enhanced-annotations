@@ -20,7 +20,8 @@ export type Annotation = {
 };
 const startPattern = /(<!--|%%|==)/g;
 const endPattern = /(-->|%%|==)/g;
-const blockRegex = /^```/;
+const blockRegex = /```/g;
+const inlineCodeRegex = /`([^`]+)`/g;
 
 type State = {
     multiLineAnnotation:
@@ -52,11 +53,18 @@ export const parseAnnotations = (
         isInsideBlock: false,
     };
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+        let line = lines[i];
 
         if (blockRegex.test(line)) {
             state.isInsideBlock = !state.isInsideBlock;
         }
+
+        if (inlineCodeRegex.test(line)) {
+            // replace == inside inline codeblocks with ++
+            line = line.replace(/`([^`]*?)==([^`]*?)`/g, '`$1++$2`');
+            inlineCodeRegex.lastIndex = 0;
+        }
+
         if (!state.isInsideBlock) {
             if (state.multiAnnotationLine) {
                 state.multiAnnotationLine = false;
