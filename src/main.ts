@@ -10,7 +10,6 @@ import { Store } from './helpers/store';
 import { SettingsActions, settingsReducer } from './settings/settings-reducer';
 import { AnnotationSuggest } from './editor-suggest/annotation-suggest';
 import { DEFAULT_SETTINGS } from './settings/default-settings';
-import { tts } from './sidebar-outline/components/components/controls-bar/helpers/tts';
 import { mergeDeep } from './settings/helpers/merge-objects';
 import { registerEditorMenuEvent } from './note-creation/register-editor-menu-event';
 
@@ -70,13 +69,11 @@ export default class LabeledAnnotations extends Plugin {
             registerEditorMenuEvent(this);
             this.outline = new OutlineUpdater(this);
             this.statusBar = new StatusBar(this);
-            tts.setPlugin(this);
             this.idling = new Idling(this);
         });
     }
 
     onunload() {
-        tts.stop();
         for (const callback of this.unsubscribeCallbacks) {
             callback();
         }

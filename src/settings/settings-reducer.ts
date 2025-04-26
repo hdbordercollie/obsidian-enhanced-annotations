@@ -186,14 +186,6 @@ const updateState = (store: Settings, action: SettingsActions) => {
         labels[action.payload.id].style.italic = action.payload.italic;
     else if (action.type === 'SET_LABEL_CASE')
         labels[action.payload.id].style.case = action.payload.case;
-    else if (action.type === 'SET_TTS_PITCH')
-        store.tts.pitch = action.payload.pitch;
-    else if (action.type === 'SET_TTS_RATE')
-        store.tts.rate = action.payload.rate;
-    else if (action.type === 'SET_TTS_VOLUME')
-        store.tts.volume = action.payload.volume;
-    else if (action.type === 'SET_TTS_VOICE')
-        store.tts.voice = action.payload.voice;
     else if (action.type === 'SET_NOTES_FOLDER')
         store.notes.defaultFolder = action.payload.folder;
     else if (action.type === 'SET_NOTES_FOLDER_MODE')
@@ -218,8 +210,6 @@ const updateState = (store: Settings, action: SettingsActions) => {
         tag.style.fontWeight = action.payload.weight;
     else if (action.type === 'SET_TAG_OPACITY')
         tag.style.opacity = action.payload.opacity;
-    else if (action.type === 'SET_TTS_FOCUS_COMMENT_IN_EDITOR')
-        store.tts.focusAnnotationInEditor = action.payload.enable;
     else if (action.type === 'LOG_PLUGIN_USED') {
         store.idling.daysUnused = [];
     } else if (action.type === 'LOG_PLUGIN_STARTED') {

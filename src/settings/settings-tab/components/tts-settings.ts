@@ -26,9 +26,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
                 .getVoices()
                 .map((v) => [v.name, v.name]);
             component.addOptions(Object.fromEntries(voices));
-            component.setValue(
-                plugin.settings.getValue().tts.voice || voices[0][0],
-            );
             component.onChange((v) => {
                 plugin.settings.dispatch({
                     type: 'SET_TTS_VOICE',
@@ -43,7 +40,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
         .setName(l.SETTINGS_TTS_VOLUME)
         .addSlider((component) =>
             component
-                .setValue(plugin.settings.getValue().tts.volume * 100)
                 .setDynamicTooltip()
                 .setLimits(0, 100, 1)
                 .onChange((value) => {
@@ -58,10 +54,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
                 .setIcon('reset')
                 .setTooltip(l.SETTINGS_TTS_RESTORE_DEFAULTS)
                 .onClick(() => {
-                    plugin.settings.dispatch({
-                        type: 'SET_TTS_VOLUME',
-                        payload: { volume: DEFAULT_SETTINGS().tts.volume },
-                    });
                     render();
                 });
         });
@@ -70,7 +62,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
         .setName(l.SETTINGS_TTS_RATE)
         .addSlider((slider) => {
             slider
-                .setValue(plugin.settings.getValue().tts.rate)
                 .setDynamicTooltip()
                 .setLimits(0.1, 10, 0.1)
                 .onChange((value) => {
@@ -85,10 +76,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
                 .setIcon('reset')
                 .setTooltip(l.SETTINGS_TTS_RESTORE_DEFAULTS)
                 .onClick(() => {
-                    plugin.settings.dispatch({
-                        type: 'SET_TTS_RATE',
-                        payload: { rate: DEFAULT_SETTINGS().tts.rate },
-                    });
                     render();
                 });
         });
@@ -97,7 +84,6 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
         .setName(l.SETTINGS_TTS_PITCH)
         .addSlider((slider) => {
             slider
-                .setValue(plugin.settings.getValue().tts.pitch)
                 .setDynamicTooltip()
                 .setLimits(0, 2, 0.1)
                 .onChange((value) => {
@@ -112,16 +98,11 @@ export const TTSSettings = ({ plugin, containerEl }: Props) => {
                 .setIcon('reset')
                 .setTooltip(l.SETTINGS_TTS_RESTORE_DEFAULTS)
                 .onClick(() => {
-                    plugin.settings.dispatch({
-                        type: 'SET_TTS_PITCH',
-                        payload: { pitch: DEFAULT_SETTINGS().tts.pitch },
-                    });
                     render();
                 });
         });
     new Setting(containerEl)
         .addToggle((c) => {
-            c.setValue(plugin.settings.getValue().tts.focusAnnotationInEditor);
             c.onChange((v) => {
                 plugin.settings.dispatch({
                     type: 'SET_TTS_FOCUS_COMMENT_IN_EDITOR',

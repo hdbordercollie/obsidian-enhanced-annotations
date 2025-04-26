@@ -21,7 +21,6 @@ const context = await esbuild.context({
 	bundle: true,
 	external: [
 		"obsidian",
-		"electron",
 		"@codemirror/autocomplete",
 		"@codemirror/collab",
 		"@codemirror/commands",
@@ -40,12 +39,12 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "temp/vault/.obsidian/plugins/enhanced-annotations-dev/main.js",
+	outfile: "main.js",
 	plugins: [
 		inlineWorkerPlugin(),
 		esbuildSvelte({
 			compilerOptions: {
-				css: true
+				css: "injected"
 			},
 			preprocess: sveltePreprocess(),
 			filterWarnings: (warning) => {

@@ -2,13 +2,11 @@
     import NavButton from './clickable-icon.svelte';
     import { l } from '../../../../../lang/lang';
     import { controls, isReading } from '../controls-bar.store';
-    import { tts } from '../helpers/tts';
     import { Paintbrush, Settings } from 'lucide-svelte';
     import LabeledAnnotations from '../../../../../main';
     import { get } from 'svelte/store';
     import { filteredBySearchAndCategory } from '../../annotations-list/annotations-list.store';
     import { annotationsToText } from '../../../../../clipboard/helpers/annotations-to-text';
-    import { clipboard } from 'electron';
     import { Notice } from 'obsidian';
     import { onDestroy } from 'svelte';
 
@@ -31,27 +29,18 @@
                 plugin.settings.getValue().clipboard.templates,
                 folder,
             );
-            clipboard.writeText(text);
+            navigator.clipboard.writeText(text);
             new Notice(l.OUTLINE_NOTICE_COPIED_TO_CLIPBOARD);
         } else {
             new Notice(l.OUTLINE_NOTICE_COULD_NOT_COPY);
         }
     };
 
-    const read = () => {
-        if (!tts.isReading) {
-            tts.read();
-        } else {
-            tts.stop();
-        }
-    };
+    const read = () => {};
 
     const toggleShowStylesSettings = () => {
         controls.dispatch({ type: 'TOGGLE_STYLES_SETTINGS' });
     };
-
-    const unsub = tts.subscribe((value) => isReading.set(value));
-    onDestroy(unsub);
 </script>
 
 <div class="nav-buttons-container">
